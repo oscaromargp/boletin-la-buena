@@ -1,0 +1,13 @@
+# Node (por si se agrega build tool en el futuro)
+node_modules/
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

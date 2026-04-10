@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boletín LA BUENA — Oscaromar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="container">
+      <div class="header-top">
+        <div class="brand">
+          <h1>Boletín <span class="gold">LA BUENA</span></h1>
+          <p class="brand-sub">Coach de Vida Total · Oscaromar</p>
+        </div>
+        <div class="header-right">
+          <div id="dateTime" class="datetime"></div>
+          <div id="lapazWeatherBadge" class="weather-badge">
+            <span class="wbadge-icon">🌡️</span>
+            <span id="wbadge-temp">—°C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TL;DR -->
+      <div class="tldr" id="tldr">
+        <span class="tldr-label">TL;DR</span>
+        <p id="tldrText">Cargando tu resumen del día…</p>
+      </div>
+
+      <!-- Morning check-in -->
+      <div class="checkin" id="checkinBox">
+        <p class="checkin-question" id="checkinQuestion"></p>
+        <div class="checkin-options" id="checkinOptions"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+
+    <!-- ===== CLIMA ===== -->
+    <section class="card span-full" id="s-clima">
+      <div class="card-header">
+        <h2>🌤️ Clima Profesional</h2>
+        <span class="card-badge" id="climaStatus">Cargando…</span>
+      </div>
+      <div class="table-wrap">
+        <table class="clima-table" id="climaTable">
+          <thead>
+            <tr>
+              <th>Ciudad</th>
+              <th>Min / Máx</th>
+              <th>Sensación</th>
+              <th>Humedad</th>
+              <th>Viento</th>
+              <th>UV</th>
+              <th>Confort</th>
+            </tr>
+          </thead>
+          <tbody id="climaBody">
+            <tr><td colspan="7" class="loading-cell">Consultando API de clima…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== SALUD ===== -->
+    <section class="card" id="s-salud">
+      <div class="card-header"><h2>💊 Salud & Bitácora</h2></div>
+      <div id="saludContent"></div>
+    </section>
+
+    <!-- ===== HIJO ===== -->
+    <section class="card card-son" id="s-hijo">
+      <div class="card-header"><h2>💖 Mensaje para mi Hijo</h2></div>
+      <div id="hijoContent"></div>
+    </section>
+
+    <!-- ===== ESPIRITUALIDAD ===== -->
+    <section class="card" id="s-espiritual">
+      <div class="card-header"><h2>📖 Espiritualidad</h2></div>
+      <div id="espiritualContent">
+        <div class="loading-cell">Cargando versículo del día…</div>
+      </div>
+    </section>
+
+    <!-- ===== MÚSICA ===== -->
+    <section class="card" id="s-musica">
+      <div class="card-header"><h2>🔊 Música & Podcasts</h2></div>
+      <div id="musicaContent"></div>
+    </section>
+
+    <!-- ===== NOTICIAS ===== -->
+    <section class="card span-full" id="s-noticias">
+      <div class="card-header"><h2>📰 Noticias Globales</h2></div>
+      <div class="news-grid">
+        <div class="news-col">
+          <h3 class="news-col-title eco">📈 Economía</h3>
+          <div id="newsEcon"><div class="loading-cell">Cargando…</div></div>
+        </div>
+        <div class="news-col">
+          <h3 class="news-col-title crypto">₿ Cripto</h3>
+          <div id="newsCrypto"><div class="loading-cell">Cargando…</div></div>
+        </div>
+        <div class="news-col">
+          <h3 class="news-col-title tech">💻 Tecnología</h3>
+          <div id="newsTech"><div class="loading-cell">Cargando…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CRIPTO PRECIOS ===== -->
+    <section class="card" id="s-cripto">
+      <div class="card-header"><h2>₿ Precios Cripto</h2></div>
+      <div id="criptoContent"><div class="loading-cell">Cargando precios…</div></div>
+    </section>
+
+    <!-- ===== PRODUCTIVIDAD ===== -->
+    <section class="card" id="s-prod">
+      <div class="card-header"><h2>🧠 Productividad</h2></div>
+      <div id="prodContent"></div>
+    </section>
+
+    <!-- ===== PROYECTOS ===== -->
+    <section class="card span-full" id="s-proyectos">
+      <div class="card-header"><h2>🌐 Proyectos & Negocios</h2></div>
+      <div class="proyectos-grid" id="proyectosGrid"></div>
+    </section>
+
+    <!-- ===== PESCA ===== -->
+    <section class="card" id="s-pesca">
+      <div class="card-header"><h2>🐟 Índice de Pesca</h2></div>
+      <div id="pescaContent"><div class="loading-cell">Esperando datos de clima…</div></div>
+    </section>
+
+    <!-- ===== MOTO ===== -->
+    <section class="card" id="s-moto">
+      <div class="card-header"><h2>🏍️ Ruta Sugerida Hoy</h2></div>
+      <div id="motoContent"><div class="loading-cell">Esperando datos de clima…</div></div>
+    </section>
+
+    <!-- ===== PLAN DEL DÍA ===== -->
+    <section class="card span-full" id="s-plan">
+      <div class="card-header"><h2>🧭 Plan del Día</h2></div>
+      <div id="planContent"></div>
+    </section>
+
+    <!-- ===== CHECKLIST ===== -->
+    <section class="card span-full" id="s-checklist">
+      <div class="card-header">
+        <h2>✔️ Checklist del Día</h2>
+        <button class="btn-reset" onclick="resetChecklist()">Reiniciar</button>
+      </div>
+      <div id="checklistContent"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER / BENDICIÓN ===== -->
+  <footer class="footer">
+    <div class="container" id="blessingContent"></div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
