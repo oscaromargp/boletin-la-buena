@@ -3,12 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boletín LA BUENA — Oscaromar</title>
+  <title>Boletín LA BUENA — Panel de Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
+  <!-- ===== SETTINGS OVERLAY ===== -->
+  <div class="settings-overlay" id="settingsOverlay" onclick="closeSetting()"></div>
+
+  <!-- ===== SETTINGS PANEL ===== -->
+  <aside class="settings-panel" id="settingsPanel">
+    <div class="sp-header">
+      <div>
+        <h3>⚙️ Panel de Control</h3>
+        <p class="sp-header-sub">Configura tu boletín</p>
+      </div>
+      <button class="sp-close" onclick="closeSetting()" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="sp-tabs">
+      <button class="stab active" data-tab="dia"      onclick="switchTab('dia')">🌅 Mi Día</button>
+      <button class="stab"        data-tab="salud"    onclick="switchTab('salud')">💊 Salud</button>
+      <button class="stab"        data-tab="secciones" onclick="switchTab('secciones')">🧭 Secciones</button>
+      <button class="stab"        data-tab="prefs"    onclick="switchTab('prefs')">🎨 Prefs</button>
+    </div>
+    <div class="sp-body">
+      <div class="stab-content active" id="tab-dia"></div>
+      <div class="stab-content"        id="tab-salud"></div>
+      <div class="stab-content"        id="tab-secciones"></div>
+      <div class="stab-content"        id="tab-prefs"></div>
+    </div>
+  </aside>
 
   <!-- ===== HEADER ===== -->
   <header class="header">
@@ -16,32 +42,38 @@
       <div class="header-top">
         <div class="brand">
           <h1>Boletín <span class="gold">LA BUENA</span></h1>
-          <p class="brand-sub">Coach de Vida Total · Oscaromar</p>
+          <p class="brand-sub" id="brandSub">Coach de Vida Total · Oscaromar</p>
         </div>
         <div class="header-right">
           <div id="dateTime" class="datetime"></div>
           <div id="lapazWeatherBadge" class="weather-badge">
-            <span class="wbadge-icon">🌡️</span>
+            <span>🌡️</span>
             <span id="wbadge-temp">—°C</span>
           </div>
+          <button class="settings-btn" onclick="openSettings('dia')" title="Configurar mi día">
+            ⚙️ <span class="settings-btn-label">Mi Día</span>
+          </button>
         </div>
       </div>
 
       <!-- TL;DR -->
-      <div class="tldr" id="tldr">
+      <div class="tldr">
         <span class="tldr-label">TL;DR</span>
         <p id="tldrText">Cargando tu resumen del día…</p>
-      </div>
-
-      <!-- Morning check-in -->
-      <div class="checkin" id="checkinBox">
-        <p class="checkin-question" id="checkinQuestion"></p>
-        <div class="checkin-options" id="checkinOptions"></div>
       </div>
     </div>
   </header>
 
   <main class="container main-grid">
+
+    <!-- ===== PRIORIDADES (condicional) ===== -->
+    <section class="card span-full priorities-card" id="s-priorities" style="display:none;">
+      <div class="card-header">
+        <h2>🎯 Mis Prioridades de Hoy</h2>
+        <button class="btn-reset" onclick="openSettings('dia')">✏️ Editar</button>
+      </div>
+      <div id="prioritiesContent"></div>
+    </section>
 
     <!-- ===== CLIMA ===== -->
     <section class="card span-full" id="s-clima">
@@ -50,20 +82,15 @@
         <span class="card-badge" id="climaStatus">Cargando…</span>
       </div>
       <div class="table-wrap">
-        <table class="clima-table" id="climaTable">
+        <table class="clima-table">
           <thead>
             <tr>
-              <th>Ciudad</th>
-              <th>Min / Máx</th>
-              <th>Sensación</th>
-              <th>Humedad</th>
-              <th>Viento</th>
-              <th>UV</th>
-              <th>Confort</th>
+              <th>Ciudad</th><th>Min / Máx</th><th>Sensación</th>
+              <th>Humedad</th><th>Viento</th><th>UV</th><th>Confort</th>
             </tr>
           </thead>
           <tbody id="climaBody">
-            <tr><td colspan="7" class="loading-cell">Consultando API de clima…</td></tr>
+            <tr><td colspan="7" class="loading-cell">Consultando clima…</td></tr>
           </tbody>
         </table>
       </div>
@@ -71,22 +98,26 @@
 
     <!-- ===== SALUD ===== -->
     <section class="card" id="s-salud">
-      <div class="card-header"><h2>💊 Salud & Bitácora</h2></div>
+      <div class="card-header">
+        <h2>💊 Salud & Bitácora</h2>
+        <button class="btn-reset" onclick="openSettings('salud')">⚙️ Config</button>
+      </div>
       <div id="saludContent"></div>
     </section>
 
     <!-- ===== HIJO ===== -->
     <section class="card card-son" id="s-hijo">
-      <div class="card-header"><h2>💖 Mensaje para mi Hijo</h2></div>
+      <div class="card-header">
+        <h2>💖 <span id="hijoTitle">Mensaje para mi Hijo</span></h2>
+        <button class="btn-reset" onclick="openSettings('dia')">⚙️ Config</button>
+      </div>
       <div id="hijoContent"></div>
     </section>
 
     <!-- ===== ESPIRITUALIDAD ===== -->
     <section class="card" id="s-espiritual">
       <div class="card-header"><h2>📖 Espiritualidad</h2></div>
-      <div id="espiritualContent">
-        <div class="loading-cell">Cargando versículo del día…</div>
-      </div>
+      <div id="espiritualContent"><div class="loading-cell">Cargando versículo…</div></div>
     </section>
 
     <!-- ===== MÚSICA ===== -->
@@ -128,20 +159,23 @@
 
     <!-- ===== PROYECTOS ===== -->
     <section class="card span-full" id="s-proyectos">
-      <div class="card-header"><h2>🌐 Proyectos & Negocios</h2></div>
+      <div class="card-header">
+        <h2>🌐 Proyectos & Negocios</h2>
+        <button class="btn-reset" onclick="openSettings('prefs')">⚙️ Visibilidad</button>
+      </div>
       <div class="proyectos-grid" id="proyectosGrid"></div>
     </section>
 
     <!-- ===== PESCA ===== -->
     <section class="card" id="s-pesca">
       <div class="card-header"><h2>🐟 Índice de Pesca</h2></div>
-      <div id="pescaContent"><div class="loading-cell">Esperando datos de clima…</div></div>
+      <div id="pescaContent"><div class="loading-cell">Esperando clima…</div></div>
     </section>
 
     <!-- ===== MOTO ===== -->
     <section class="card" id="s-moto">
       <div class="card-header"><h2>🏍️ Ruta Sugerida Hoy</h2></div>
-      <div id="motoContent"><div class="loading-cell">Esperando datos de clima…</div></div>
+      <div id="motoContent"><div class="loading-cell">Esperando clima…</div></div>
     </section>
 
     <!-- ===== PLAN DEL DÍA ===== -->
@@ -154,19 +188,23 @@
     <section class="card span-full" id="s-checklist">
       <div class="card-header">
         <h2>✔️ Checklist del Día</h2>
-        <button class="btn-reset" onclick="resetChecklist()">Reiniciar</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-reset" onclick="openSettings('salud')">+ Agregar</button>
+          <button class="btn-reset" onclick="resetChecklist()">🔄 Reiniciar</button>
+        </div>
       </div>
       <div id="checklistContent"></div>
     </section>
 
   </main>
 
-  <!-- ===== FOOTER / BENDICIÓN ===== -->
+  <!-- ===== FOOTER ===== -->
   <footer class="footer">
     <div class="container" id="blessingContent"></div>
   </footer>
 
   <script src="js/config.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
