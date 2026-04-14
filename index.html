@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Boletín LA BUENA — Situational Awareness Dashboard</title>
-  <meta name="description" content="Dashboard personal de conciencia situacional para La Paz, BCS. Clima, intel global, pesca, cripto, proyectos y más.">
+  <meta name="description" content="Dashboard personal de conciencia situacional — oscaromargp · La Paz, BCS. Intel global, clima, mareas, cripto y proyectos.">
   <meta name="theme-color" content="#0a0f1a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,10 +20,10 @@
     <div class="header-left">
       <div class="brand-block">
         <div class="brand-title">
-          <span class="brand-dot blink"></span>
+          <span class="brand-dot"></span>
           BOLETÍN <span class="brand-accent">LA BUENA</span>
         </div>
-        <div class="brand-sub" id="brandSub">Situational Awareness Dashboard · La Paz, BCS</div>
+        <div class="brand-sub" id="brandSub">Situational Awareness Dashboard · oscaromargp · La Paz, BCS</div>
       </div>
     </div>
 
@@ -58,19 +58,50 @@
        ============================================================ -->
   <main class="main-grid">
 
-    <!-- === PRIORIDADES DEL DÍA === -->
-    <section id="s-priorities" class="card" style="display:none;">
+    <!-- === PRIORIDADES KANBAN (Trello-style + Drag & Drop) === -->
+    <section id="s-priorities" class="card card-full kanban-card" style="display:none;">
       <div class="card-header">
-        <h2 class="card-title">🎯 Mis Prioridades de Hoy</h2>
+        <h2 class="card-title">🎯 Panel de Prioridades</h2>
+        <div class="card-meta">Drag & Drop · Auto-guardado</div>
       </div>
-      <div class="card-body" id="prioritiesContent"></div>
+      <div class="card-body">
+        <div class="kanban-board" id="kanbanBoard">
+          <div class="kanban-col" id="kanbancol-backlog">
+            <div class="kanban-col-header" style="border-color:#64748b;">
+              <span class="kanban-col-icon">📋</span>
+              <span class="kanban-col-title">BACKLOG</span>
+              <span class="kanban-count" id="count-backlog">0</span>
+            </div>
+            <div class="kanban-list" id="klist-backlog" data-col="backlog"></div>
+            <button class="kanban-add-btn" onclick="addKanbanCard('backlog')">+ Agregar</button>
+          </div>
+          <div class="kanban-col" id="kanbancol-doing">
+            <div class="kanban-col-header" style="border-color:#3b82f6;">
+              <span class="kanban-col-icon">⚡</span>
+              <span class="kanban-col-title">EN CURSO</span>
+              <span class="kanban-count" id="count-doing">0</span>
+            </div>
+            <div class="kanban-list" id="klist-doing" data-col="doing"></div>
+            <button class="kanban-add-btn" onclick="addKanbanCard('doing')" style="border-color:rgba(59,130,246,0.3);color:#3b82f6;">+ Agregar</button>
+          </div>
+          <div class="kanban-col" id="kanbancol-done">
+            <div class="kanban-col-header" style="border-color:#10b981;">
+              <span class="kanban-col-icon">✅</span>
+              <span class="kanban-col-title">COMPLETADO</span>
+              <span class="kanban-count" id="count-done">0</span>
+            </div>
+            <div class="kanban-list" id="klist-done" data-col="done"></div>
+            <button class="kanban-add-btn" onclick="addKanbanCard('done')" style="border-color:rgba(16,185,129,0.3);color:#10b981;">+ Agregar</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- === PANEL SITUACIONAL (WorldMonitor-inspired) === -->
     <section id="s-sitpanel" class="card card-full intel-card">
       <div class="card-header">
         <h2 class="card-title">
-          <span class="intel-live-dot blink"></span>
+          <span class="intel-live-dot"></span>
           🛰️ Panel de Inteligencia Situacional
         </h2>
         <div class="card-meta">OSINT · RSS Global · Signal Analysis</div>
@@ -83,21 +114,36 @@
       </div>
     </section>
 
-    <!-- === MAPA SITUACIONAL BCS === -->
+    <!-- === MAPA SITUACIONAL BCS — COLAPSABLE === -->
     <section id="s-sitmap" class="card card-full">
-      <div class="card-header">
-        <h2 class="card-title">🗺️ Mapa Situacional — Baja California Sur</h2>
-        <div class="card-meta">Zonas de interés · Mar de Cortés · Rutas</div>
+      <div class="card-header" style="cursor:pointer;" onclick="toggleMap()" aria-label="Expandir/colapsar mapa">
+        <h2 class="card-title">🗺️ Mapa Táctico — Baja California Sur</h2>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="card-meta">El Mogote · Mareas · Viento</div>
+          <button class="map-toggle-btn" id="mapToggleBtn" aria-label="Expandir mapa">▼ Expandir</button>
+        </div>
       </div>
-      <div class="card-body" style="padding:0;">
+      <!-- El mapa está colapsado por defecto — no obstruye el scroll -->
+      <div class="map-collapsible" id="mapCollapsible" style="display:none;">
         <div id="situationalMap" class="sit-map-container"></div>
         <div class="map-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:#10b981;"></span>Base</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span>Pesca</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span>Cultura</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span>Kitesurf</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#06b6d4;box-shadow:0 0 6px #06b6d4;"></span>Mar de Cortés</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#10b981;"></span>Base (La Paz)</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span>El Mogote ⚓</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span>La Ventana</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span>Todos Santos</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span>Cabo San Lucas</span>
         </div>
+      </div>
+    </section>
+
+    <!-- === MAREAS BCS + ÍNDICE DE PESCA AVANZADO === -->
+    <section id="s-pesca" class="card card-full">
+      <div class="card-header">
+        <h2 class="card-title">🌊 Mareas & Pesca — La Paz, BCS</h2>
+        <div class="card-meta">Datos armónicos BCS · Mar de Cortés</div>
+      </div>
+      <div class="card-body" id="pescaContent">
+        <div class="intel-loading"><div class="intel-spinner"></div><span>Calculando mareas…</span></div>
       </div>
     </section>
 
@@ -111,19 +157,42 @@
         <table class="clima-table">
           <thead>
             <tr>
-              <th>Ciudad</th>
-              <th>Min/Max</th>
-              <th>Sens. Térmica</th>
-              <th>Humedad</th>
-              <th>Viento</th>
-              <th>UV</th>
-              <th>Confort</th>
+              <th>Ciudad</th><th>Min/Max</th><th>Sens. Térmica</th>
+              <th>Humedad</th><th>Viento</th><th>UV</th><th>Confort</th>
             </tr>
           </thead>
           <tbody id="climaBody">
             <tr><td colspan="7" class="loading-cell">Cargando datos…</td></tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- === CRIPTO & FIAT DINÁMICO === -->
+    <section id="s-cripto" class="card">
+      <div class="card-header">
+        <h2 class="card-title">₿ Markets</h2>
+        <div class="card-meta">CoinGecko · Configurable en ⚙️</div>
+      </div>
+      <div class="card-body" id="criptoContent">
+        <div class="intel-loading"><div class="intel-spinner"></div><span>Cargando mercados…</span></div>
+      </div>
+    </section>
+
+    <!-- === CONTROL DE FLUJO (Balance Fiat vs Cripto) === -->
+    <section id="s-flujo" class="card">
+      <div class="card-header">
+        <h2 class="card-title">💹 Control de Flujo</h2>
+        <div class="card-meta">Balance de activos</div>
+      </div>
+      <div class="card-body" id="flujoContent">
+        <div class="flujo-placeholder">
+          <p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">
+            Configura tus balances en ⚙️ → Prefs → Control de Flujo<br>
+            <span style="font-size:0.72rem;color:var(--text-muted);opacity:0.7;">Los valores se guardan localmente</span>
+          </p>
+        </div>
+        <div id="flujoBalances"></div>
       </div>
     </section>
 
@@ -189,17 +258,6 @@
       </div>
     </section>
 
-    <!-- === CRIPTO === -->
-    <section id="s-cripto" class="card">
-      <div class="card-header">
-        <h2 class="card-title">₿ Precios Cripto</h2>
-        <div class="card-meta">Tiempo real · CoinGecko</div>
-      </div>
-      <div class="card-body" id="criptoContent">
-        <div class="loading-cell">Cargando…</div>
-      </div>
-    </section>
-
     <!-- === PRODUCTIVIDAD === -->
     <section id="s-prod" class="card">
       <div class="card-header">
@@ -216,17 +274,6 @@
       </div>
       <div class="card-body">
         <div class="proyectos-grid" id="proyectosGrid"></div>
-      </div>
-    </section>
-
-    <!-- === ÍNDICE DE PESCA === -->
-    <section id="s-pesca" class="card">
-      <div class="card-header">
-        <h2 class="card-title">🐟 Índice de Pesca</h2>
-        <div class="card-meta">Mar de Cortés · La Paz</div>
-      </div>
-      <div class="card-body" id="pescaContent">
-        <div class="loading-cell">Esperando datos de clima…</div>
       </div>
     </section>
 
@@ -266,8 +313,9 @@
   <footer class="hud-footer">
     <div id="blessingContent"></div>
     <div class="footer-credits">
-      Construido con ❤️ · La Paz, BCS ·
-      <a href="https://oscaromargp.github.io/boletin-la-buena" target="_blank">Boletín LA BUENA v3</a>
+      Construido por <a href="https://oscaromargp.github.io/Oscaromargp/" target="_blank" rel="noopener">oscaromargp</a> ·
+      La Paz, BCS · Boletín LA BUENA v3 ·
+      Inspirado en <a href="https://github.com/koala73/worldmonitor" target="_blank" rel="noopener">WorldMonitor</a>
     </div>
   </footer>
 
@@ -283,16 +331,21 @@
     <div class="sp-tabs">
       <button class="stab active" data-tab="dia"       onclick="switchTab('dia')">📅 Mi Día</button>
       <button class="stab"        data-tab="salud"     onclick="switchTab('salud')">💊 Salud</button>
+      <button class="stab"        data-tab="markets"   onclick="switchTab('markets')">₿ Markets</button>
       <button class="stab"        data-tab="secciones" onclick="switchTab('secciones')">🧭 Secciones</button>
       <button class="stab"        data-tab="prefs"     onclick="switchTab('prefs')">⚙️ Prefs</button>
     </div>
     <div class="sp-body">
       <div class="stab-content active" id="tab-dia"></div>
       <div class="stab-content"        id="tab-salud"></div>
+      <div class="stab-content"        id="tab-markets"></div>
       <div class="stab-content"        id="tab-secciones"></div>
       <div class="stab-content"        id="tab-prefs"></div>
     </div>
   </aside>
+
+  <!-- Sortable.js CDN (Drag & Drop para Kanban) -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 
   <!-- Scripts — orden importante -->
   <script src="js/config.js"></script>

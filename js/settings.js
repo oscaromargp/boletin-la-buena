@@ -13,7 +13,7 @@ const DAILY_KEY_PFX  = 'boletin_daily_';
 
 const DEFAULTS = {
   settings: {
-    user: { name: 'Oscaromar', ciudad: 'La Paz', estado: 'BCS' },
+    user: { name: 'oscaromargp', ciudad: 'La Paz', estado: 'BCS' },
     medications: [
       { id: 'ritalin', name: 'Ritalin',     dose: '1 pastilla', time: 'AM',    active: true },
       { id: 'compb',   name: 'Complejo B',  dose: '1 cápsula',  time: 'AM',    active: true }
@@ -118,7 +118,7 @@ function _renderPanel() {
 }
 
 function _renderCurrentTab() {
-  const map = { dia: renderDiaTab, salud: renderSaludTab, secciones: renderSeccionesTab, prefs: renderPrefsTab };
+  const map = { dia: renderDiaTab, salud: renderSaludTab, markets: renderMarketsTab, secciones: renderSeccionesTab, prefs: renderPrefsTab };
   (map[_currentTab] || renderDiaTab)();
 }
 
@@ -562,7 +562,7 @@ function saveUserPrefs() {
 
   // Update brand subtitle
   const sub = document.getElementById('brandSub');
-  if (sub) sub.textContent = `Coach de Vida Total · ${s.user.name} · ${s.user.ciudad}, ${s.user.estado}`;
+  if (sub) sub.textContent = `Situational Awareness Dashboard · ${s.user.name} · ${s.user.ciudad}, ${s.user.estado}`;
 
   _safeCall('renderTldr');
   _safeCall('renderBendicion');
@@ -587,6 +587,96 @@ function checkFirstVisit() {
   if (isBlank) {
     setTimeout(() => openSettings('dia'), 900);
   }
+}
+
+/* ================================================================
+   TAB: MARKETS — Selector de cripto/fiat + Control de Flujo
+   ================================================================ */
+function renderMarketsTab() {
+  const selected = getSelectedMarkets();
+  const flujoConfig = getFlujoConfig();
+  const availableCoins = [
+    { id: 'bitcoin',    name: 'Bitcoin (BTC)',   icon: '₿' },
+    { id: 'ethereum',   name: 'Ethereum (ETH)',  icon: 'Ξ' },
+    { id: 'solana',     name: 'Solana (SOL)',    icon: '◎' },
+    { id: 'dogecoin',   name: 'Dogecoin (DOGE)', icon: 'Ð' },
+    { id: 'ripple',     name: 'XRP',             icon: '✕' },
+    { id: 'tether',     name: 'Tether (USDT)',   icon: '₮' },
+    { id: 'usd-coin',   name: 'USD Coin (USDC)', icon: '＄' }
+  ];
+
+  document.getElementById('tab-markets').innerHTML = `
+    <div class="sp-section">
+      <div class="sp-label">₿ Market Selector</div>
+      <div class="sp-sub" style="margin-bottom:10px;">Selecciona los activos que quieres monitorear en el dashboard</div>
+      ${availableCoins.map(c => `
+        <div class="med-item">
+          <div class="sp-row">
+            <span style="font-size:0.88rem;">${c.icon} ${c.name}</span>
+            <label class="toggle-switch small">
+              <input type="checkbox" ${selected[c.id] ? 'checked' : ''}
+                onchange="toggleMarketCoin('${c.id}', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-label">💹 Control de Flujo — Mis Activos</div>
+      <div class="sp-sub" style="margin-bottom:10px;">Ingresa tus balances para ver distribución Fiat vs Cripto</div>
+
+      <div class="sp-add-form" style="display:flex;">
+        <div>
+          <div class="sp-sub" style="margin-bottom:2px;">MXN en efectivo/cuenta</div>
+          <input class="pri-input" id="flujoMXN" type="number" min="0" placeholder="0"
+            value="${flujoConfig.mxn || 0}" style="margin-top:0;">
+        </div>
+        <div>
+          <div class="sp-sub" style="margin-bottom:2px;">USD en efectivo/cuenta</div>
+          <input class="pri-input" id="flujoUSD" type="number" min="0" placeholder="0"
+            value="${flujoConfig.usd || 0}">
+        </div>
+      </div>
+
+      <div class="sp-label" style="margin-top:10px;font-size:0.78rem;">Cantidad de cripto que posees (unidades)</div>
+      ${availableCoins.filter(c => selected[c.id]).map(c => `
+        <div class="sp-add-form" style="display:flex;">
+          <div style="flex:1;">
+            <div class="sp-sub" style="margin-bottom:2px;">${c.icon} ${c.name}</div>
+            <input class="pri-input" id="flujo_${c.id}" type="number" min="0" step="0.00001" placeholder="0"
+              value="${flujoConfig.crypto?.[c.id] || 0}" style="margin-top:0;">
+          </div>
+        </div>`).join('')}
+
+      <button class="sp-save-btn" onclick="saveFlujoConfig()">💾 Guardar activos</button>
+    </div>
+  `;
+}
+
+function toggleMarketCoin(coinId, val) {
+  const selected = getSelectedMarkets();
+  selected[coinId] = val;
+  saveSelectedMarkets(selected);
+  renderMarketsTab();
+  if (typeof fetchCripto === 'function') fetchCripto();
+}
+
+function saveFlujoConfig() {
+  const cfg = {
+    mxn: parseFloat(document.getElementById('flujoMXN')?.value || 0),
+    usd: parseFloat(document.getElementById('flujoUSD')?.value || 0),
+    crypto: {}
+  };
+  const selected = getSelectedMarkets();
+  Object.keys(selected).forEach(id => {
+    const el = document.getElementById(`flujo_${id}`);
+    if (el) cfg.crypto[id] = parseFloat(el.value || 0);
+  });
+  localStorage.setItem('boletin_flujo', JSON.stringify(cfg));
+  if (typeof fetchCripto === 'function') fetchCripto();
+  const btn = document.querySelector('#tab-markets .sp-save-btn');
+  if (btn) { btn.textContent = '✓ Guardado'; setTimeout(() => btn.textContent = '💾 Guardar activos', 2000); }
 }
 
 /* ================================================================
