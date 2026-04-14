@@ -172,7 +172,10 @@ function _initSortable() {
   if (typeof Sortable === 'undefined') return;
   ['backlog','doing','done'].forEach(col => {
     const el = $(`klist-${col}`);
-    if (!el || el._sortable) return;
+    if (!el) return;
+    if (el._sortable) {
+      el._sortable.destroy();
+    }
     el._sortable = new Sortable(el, {
       group: 'kanban',
       animation: 150,
@@ -233,6 +236,35 @@ function deleteKanbanCard(id, col) {
   saveKanban(data);
   renderKanban();
 }
+
+async function syncGithubData(btn) {
+  if (btn) btn.textContent = '🔄...';
+  try {
+    const success = await window.GithubSync.syncDown();
+    if (success) {
+      renderKanban();
+      renderPriorities();
+      renderDiaTab();
+    }
+    await window.GithubSync.syncUp(); // Push local changes just in case
+    if (btn) btn.textContent = '✅ Sincronizado';
+    setTimeout(() => { if (btn) btn.textContent = '⬆⬇ Sincronizar'; }, 3000);
+  } catch (err) {
+    if (btn) btn.textContent = '❌ Error';
+    setTimeout(() => { if (btn) btn.textContent = '⬆⬇ Sincronizar'; }, 3000);
+  }
+}
+
+// Override saveKanban to trigger async push optionally (debounced to avoid rate limit)
+let syncTimeout;
+const _origSaveKanban = saveKanban;
+window.saveKanban = function(data) {
+  _origSaveKanban.call(this, data);
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(() => {
+    window.GithubSync.syncUp();
+  }, 5000);
+};
 
 /* ================================================================
    PRIORITIES (sección clásica - refleja Kanban "doing")
@@ -1115,9 +1147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sub = $('brandSub');
   if (sub) sub.textContent = `Situational Awareness Dashboard · oscaromargp · ${settings.user.ciudad}, ${settings.user.estado}`;
 
-  // Renders síncronos inmediatos
   renderDateTime();
   renderTldr();
+  renderKanban();
   renderPriorities();
   renderSalud();
   renderHijo();

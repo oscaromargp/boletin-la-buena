@@ -62,7 +62,10 @@
     <section id="s-priorities" class="card card-full kanban-card" style="display:none;">
       <div class="card-header">
         <h2 class="card-title">🎯 Panel de Prioridades</h2>
-        <div class="card-meta">Drag & Drop · Auto-guardado</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="card-meta">Drag & Drop · Auto-guardado</div>
+          <button class="map-toggle-btn" style="border-color:#10b981;color:#10b981;" onclick="syncGithubData(this)" aria-label="Sincronizar">⬆⬇ Sincronizar</button>
+        </div>
       </div>
       <div class="card-body">
         <div class="kanban-board" id="kanbanBoard">
@@ -351,6 +354,7 @@
   <script src="js/config.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/intel_service.js"></script>
+  <script src="js/github_sync.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

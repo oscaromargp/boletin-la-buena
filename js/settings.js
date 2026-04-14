@@ -359,6 +359,15 @@ function renderPrefsTab() {
     </div>
 
     <div class="sp-section">
+      <div class="sp-label">🐙 Sincronización GitHub</div>
+      <div class="sp-sub" style="margin-bottom:6px;">Inserta tu token de acceso personal para sincronizar tus prioridades y estado.</div>
+      <div class="sp-add-form" style="display:flex;">
+        <input class="pri-input" id="githubToken" type="password" value="${_escHtml(settings.githubToken || '')}" placeholder="ghp_..." style="margin-top:0;">
+        <button class="sp-save-btn" id="saveGtBtn" onclick="saveGithubToken()">Guardar token</button>
+      </div>
+    </div>
+
+    <div class="sp-section">
       <div class="sp-label">🌐 Proyectos visibles</div>
       ${CFG.projects.map(p => `
         <div class="med-item">
@@ -569,6 +578,19 @@ function saveUserPrefs() {
 
   const btn = document.getElementById('savePrefsBtn');
   if (btn) { btn.textContent = '✓ Guardado'; setTimeout(() => btn.textContent = '💾 Guardar perfil', 2000); }
+}
+
+function saveGithubToken() {
+  const s = getSettings();
+  const token = document.getElementById('githubToken').value.trim();
+  s.githubToken = token;
+  saveSettings(s);
+  const btn = document.getElementById('saveGtBtn');
+  if (btn) { btn.textContent = '✓ Guardado'; setTimeout(() => btn.textContent = 'Guardar token', 2000); }
+  // Optional: trigger immediate sync?
+  if (window.GithubSync) window.GithubSync.syncDown().then((ok) => {
+    if (ok && window.renderKanban) window.renderKanban();
+  });
 }
 
 function toggleProject(projId, val) {
