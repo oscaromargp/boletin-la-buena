@@ -1,147 +1,150 @@
-# 📋 Boletín LA BUENA — Panel de Control Personal
+# 🛰️ Boletín LA BUENA — Situational Awareness Edition v3
 
-> Dashboard personal diario configurable: brújula emocional, operativa, espiritual y estratégica.
-
-**🌐 Sitio en vivo:** [oscaromargp.github.io/boletin-la-buena](https://oscaromargp.github.io/boletin-la-buena)
-**📁 Repositorio:** [github.com/oscaromargp/boletin-la-buena](https://github.com/oscaromargp/boletin-la-buena)
+> Dashboard personal de conciencia situacional para La Paz, BCS.
+> Funde el seguimiento diario de **Boletín LA BUENA** con las capacidades OSINT e inteligencia situacional de **[World Monitor](https://github.com/koala73/worldmonitor)**.
 
 ---
 
-## ¿Qué es esto?
+## 🖥️ Vista general
 
-Un sitio web personal tipo **panel de control** que carga datos reales cada mañana y permite configurarlo completamente según el día. No es un sitio estático — recuerda tus preferencias, tu estado de ánimo, si estás con tu hijo, tus prioridades del día, y adapta el contenido en consecuencia.
+Un HUD (Heads-Up Display) personal y profesional que integra:
 
----
-
-## ⚙️ Panel de Control — 4 Pestañas
-
-Abre el panel con el botón **⚙️ Mi Día** en el encabezado.
-
-### 🌅 Mi Día
-| Campo | Descripción |
-|-------|-------------|
-| Mood del día | 4 opciones (Con todo / Tranquilo / Cansado / Enfocado) — cambia el TL;DR |
-| ¿Con tu hijo? | Toggle que transforma la sección Hijo a modo "presencial" |
-| Proyecto foco | Selector que destaca el proyecto con badge dorado |
-| Medicación de hoy | Check individual por medicamento activo |
-| Prioridades (máx. 5) | Aparecen como tarjeta destacada en el dashboard |
-| Nota libre | Campo libre para recordatorios o intenciones del día |
-
-### 💊 Salud
-- **Medicamentos**: Agregar, quitar, activar/desactivar (Ritalin, Complejo B, o cualquiera)
-- **Hábitos**: Agregar, quitar, activar/desactivar (agua, ejercicio, etc.)
-- **Checklist personalizado**: Agregar tareas permanentes al checklist diario
-
-### 🧭 Secciones
-Toggle individual para cada sección del boletín. Cambios inmediatos.
-
-### 🎨 Preferencias
-- Editar nombre, ciudad y estado
-- Mostrar u ocultar proyectos individuales
-- Reset completo de configuración
+| Panel | Descripción |
+|---|---|
+| 🛰️ **Intel Situacional** | Feeds RSS globales clasificados por señal: economía, seguridad, clima, pesca, política y tecnología |
+| 🗺️ **Mapa BCS** | Mapa interactivo oscuro centrado en Baja California Sur con puntos de interés, zonas de pesca y rutas (Leaflet + CARTO Dark) |
+| 🌤️ **Clima** | Datos en tiempo real de Open-Meteo para La Paz, CDMX y Puerto Escondido |
+| 🐟 **Índice de Pesca** | Algoritmo propio basado en viento, UV y temperatura para calificar condiciones en el Mar de Cortés |
+| 💱 **Forex / Cripto** | USD/MXN en tiempo real + precios de Bitcoin, Ethereum, Solana y DOGE via CoinGecko |
+| 📰 **Noticias** | Feed de economía, cripto-noticias y tecnología via rss2json |
+| 📖 **Espiritualidad** | Versículo diario (RVR1960) + acción espiritual rotativa |
+| 💊 **Salud & Hábitos** | Seguimiento personal de medicamentos y hábitos con estado diario persistente |
+| 🏍️ **Ruta en Moto** | Ruta sugerida basada en condiciones climáticas (Italika FT150 TS) |
+| ✔️ **Checklist** | Lista diaria persistente por fecha con reinicio automático |
+| 💖 **Panel de Hijo** | Modos "estoy con él" / "a distancia" con ventana de comunicación óptima |
 
 ---
 
-## 🔄 Comportamiento inteligente
-
-| Feature | Cómo funciona |
-|---------|---------------|
-| Auto-apertura | Si no has configurado tu día, el panel se abre solo al cargar |
-| Modo hijo presencial | Toggle "con mi hijo hoy" → sección se convierte en guía de actividades juntos |
-| TL;DR dinámico | Cambia según mood + prioridades + proyecto foco |
-| Plan del día | Se actualiza automáticamente cuando seleccionas proyecto foco |
-| Checklist | Combina medicamentos activos + hábitos activos + tareas base + custom |
-| Pesca | Índice calculado con datos reales de viento, UV y temperatura |
-| Ruta moto | Sugerencia rotativa por día de semana (ajustada a condiciones) |
-
----
-
-## 🛰️ APIs utilizadas (todas gratuitas, sin clave)
-
-| Dato | API | Costo |
-|------|-----|-------|
-| Clima 4 ciudades | [Open-Meteo](https://open-meteo.com/) | $0 |
-| BTC / ETH / SOL / DOGE | [CoinGecko](https://www.coingecko.com/en/api) | $0 |
-| Noticias (Eco / Cripto / Tech) | [rss2json.com](https://rss2json.com/) | $0 |
-| Versículo del día RVR1960 | [bible-api.com](https://bible-api.com/) | $0 |
-
-**Costo mensual total: $0.00 MXN** ✅
-
----
-
-## 📁 Estructura del proyecto
+## 🏗️ Arquitectura
 
 ```
-boletin-la-buena/
-├── index.html              # Layout principal — todas las secciones
+boletin-la-buena-upgrade/
+├── index.html          # Layout HUD con todas las secciones
 ├── css/
-│   └── style.css           # Diseño oscuro premium + estilos del panel
+│   └── style.css       # Tema HUD oscuro · design tokens · responsive
 ├── js/
-│   ├── config.js           # Datos estáticos: ciudades, proyectos, rutas, música
-│   ├── settings.js         # Panel de control UI + localStorage (settings + daily state)
-│   └── app.js              # Lógica: fetch APIs + render de secciones
-├── .gitignore
+│   ├── config.js       # CFG: ciudades, APIs, proyectos, rutas
+│   ├── settings.js     # Gestión de preferencias (localStorage)
+│   ├── intel_service.js  # ← NUEVO: agregador OSINT / signal classifier
+│   └── app.js          # Render y orquestación principal
 └── README.md
 ```
 
 ### Flujo de datos
 
 ```
-config.js  →  datos estáticos (coords, proyectos, rutas)
-settings.js → estado del usuario (localStorage) + UI del panel
-app.js      → fetch APIs + render usando config + settings
+Open-Meteo ──────────────┐
+CoinGecko ───────────────┤
+rss2json (RSS feeds) ─────┤──► intel_service.js ──► Signal Classifier ──► Panel Situacional
+Open Exchange Rates ──────┘
+bible-api ────────────────────────────────────────────────────────────────► Espiritualidad
+
+Leaflet + CARTO Dark ─────────────────────────────────────────────────────► Mapa BCS
+localStorage ─────────────────────────────────────────────────────────────► Settings / Daily
 ```
 
 ---
 
-## 💾 Almacenamiento (localStorage)
+## ⚙️ Tecnologías
 
-| Clave | Contenido | Persistencia |
-|-------|-----------|-------------|
-| `boletin_settings` | Medicamentos, hábitos, secciones, proyectos, perfil | Permanente |
-| `boletin_daily_YYYY-MM-DD` | Mood, withSon, focusProject, prioridades, notas, meds tomados | 1 día |
-| `boletin_ck_YYYY-M-D` | Estado del checklist (qué ítems marcados) | 1 día |
-
----
-
-## ✏️ Personalización en `config.js`
-
-Para cambiar datos base (no requieren panel):
-
-```javascript
-// Agregar una ciudad de clima
-CFG.cities.miami = { name: 'Miami', state: 'FL', role: '✈️ Viaje', lat: 25.77, lon: -80.19, tz: 'America%2FNew_York' };
-
-// Agregar una ruta en moto
-CFG.motoRoutes.push({ name: 'San Bartolo', dist: '60 km', ... });
-
-// Agregar proyecto
-CFG.projects.push({ id: 'nuevo', emoji: '🟪', name: 'Mi Proyecto', ... });
-```
+| Tecnología | Uso |
+|---|---|
+| JavaScript (ES2022, vanilla) | Toda la lógica del dashboard |
+| CSS (custom properties + grid) | Tema HUD, design tokens, animaciones |
+| Leaflet 1.9.4 | Mapa interactivo (carga dinámica) |
+| CARTO Dark Matter tiles | Tiles oscuros tipo intel/HUD |
+| Open-Meteo (gratis) | Clima + datos marinos BCS |
+| CoinGecko (free tier) | Precios crypto + cambio 24h |
+| rss2json API | Normalización de feeds RSS |
+| Open Exchange Rates | Tipo de cambio USD/MXN |
+| bible-api.com | Versículos RVR1960 |
+| localStorage | Persistencia de preferencias y estado diario |
 
 ---
 
-## 🚀 Actualizar el sitio
+## 🗺️ Mapa Situacional
+
+El mapa está centrado en **La Paz, BCS** y carga dinámicamente Leaflet. Incluye:
+
+- 🏠 **Base de operaciones**: La Paz, BCS
+- ⚓ **Zona de pesca**: El Mogote
+- 🪁 **La Ventana**: spot de kitesurf
+- 🏙️ **Todos Santos**: Pueblo Mágico
+- ⛏️ **El Triunfo**: pueblo histórico
+- 🟦 **Polígono**: Mar de Cortés (zona de pesca activa)
+
+---
+
+## 🔄 IntelService — Clasificador de Señales
+
+El módulo `intel_service.js` agrega feeds y clasifica cada noticia en categorías de señal:
+
+| Señal | Palabras clave detectadas |
+|---|---|
+| `economic` | inflación, dólar, BANXICO, PIB, mercado, peso |
+| `political` | gobierno, presidente, elecciones, decreto |
+| `climate` | huracán, tormenta, ciclón, sismo, temperatura |
+| `security` | crimen, violencia, ejército, operativo |
+| `fishing` | pesca, camarón, veda, CONAPESCA, Mar de Cortés |
+| `technology` | IA, ciberseguridad, startup, digital |
+
+Incluye caché de 15 minutos por feed para no saturar las APIs.
+
+---
+
+## 🚀 Uso local
 
 ```bash
-cd C:/ANTIGRAVITI_LAP/repos/boletin-la-buena
-git add .
-git commit -m "Descripción del cambio"
-git push
+# Clonar
+git clone https://github.com/oscaromargp/boletin-la-buena
+
+# No requiere instalación de dependencias — puro HTML/CSS/JS
+# Abrir directamente en navegador:
+start index.html
+
+# O con servidor local (evita CORS en algunos navegadores):
+npx -y serve .
 ```
 
-GitHub Pages despliega en ~2 minutos.
+---
+
+## 📦 Despliegue en GitHub Pages
+
+```bash
+git add .
+git commit -m "feat: Situational Awareness Edition v3 — WorldMonitor fusion"
+git push origin main
+# GitHub Pages: Settings → Pages → Branch: main → /root
+```
 
 ---
 
-## 📦 Historial de versiones
+## 🙏 Créditos
 
-| Versión | Descripción |
-|---------|-------------|
-| v1.0 | Sitio estático con APIs de clima, cripto, noticias y espiritualidad |
-| v2.0 | Panel de control configurable: mood, hijo, medicamentos, secciones, proyectos, prioridades |
+- **[koala73/worldmonitor](https://github.com/koala73/worldmonitor)** — Inspiración arquitectónica para el sistema de inteligencia situacional, clasificación de señales OSINT y el diseño tipo HUD.
+- **[Open-Meteo](https://open-meteo.com/)** — API de clima gratuita y abierta.
+- **[CoinGecko](https://coingecko.com/)** — API de precios cripto.
+- **[Leaflet.js](https://leafletjs.com/)** — Librería de mapas open source.
+- **[CARTO](https://carto.com/)** — Tiles cartográficos dark mode.
+- **[rss2json](https://rss2json.com/)** — Convertidor de RSS a JSON.
 
 ---
 
-Construido con ❤️ para **Oscaromar** · La Paz, BCS
-Basado en el **Prompt Maestro LA BUENA V14** · Abril 2026
+## 👤 Autor
+
+**Oscar Omar González Piñuelas** — La Paz, BCS, México  
+Dashboard personal de conciencia situacional construido con ❤️
+
+---
+
+> *"Información es poder. Inteligencia situacional es libertad."*
