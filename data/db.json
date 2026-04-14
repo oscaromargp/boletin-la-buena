@@ -1,0 +1,31 @@
+{
+  "kanban": {
+    "backlog": [
+      {
+        "id": "k_1776183605265",
+        "text": "Nexus OS",
+        "created": "2026-04-14T16:20:05.265Z"
+      }
+    ],
+    "doing": [],
+    "done": []
+  },
+  "daily": {
+    "mood": "tired",
+    "withSon": false,
+    "focusProject": "paypaps",
+    "priorities": [
+      "Nexus OS",
+      "Celular de LM",
+      "Laptop"
+    ],
+    "notes": "",
+    "medications": {
+      "compb": true,
+      "med_1776133212927": true,
+      "ritalin": true
+    },
+    "habits": {}
+  },
+  "timestamp": 1776183610269
+}
