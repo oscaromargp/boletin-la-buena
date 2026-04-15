@@ -11,21 +11,13 @@
     "done": []
   },
   "daily": {
-    "mood": "tired",
+    "mood": null,
     "withSon": false,
-    "focusProject": "paypaps",
-    "priorities": [
-      "Nexus OS",
-      "Celular de LM",
-      "Laptop"
-    ],
+    "focusProject": null,
+    "priorities": [],
     "notes": "",
-    "medications": {
-      "compb": true,
-      "med_1776133212927": true,
-      "ritalin": true
-    },
+    "medications": {},
     "habits": {}
   },
-  "timestamp": 1776183616606
+  "timestamp": 1776290649365
 }
