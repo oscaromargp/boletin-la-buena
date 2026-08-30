@@ -10,7 +10,7 @@ const CFG = {
   publicMode: true,
 
   /* URL de la API de datos del VPS (solo versión personal) */
-  nexusApi: '/api/tareas.json',
+  nexusApi: 'api/tareas.json',
 
   /* ---- Ciudades (Open-Meteo) ---- */
   cities: {
