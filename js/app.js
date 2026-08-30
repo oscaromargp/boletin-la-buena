@@ -276,7 +276,9 @@ async function syncGithubData(btn) {
 /* --- Integración Nexus (versión personal) --- */
 async function loadNexusData() {
   try {
-    const res = await fetch(CFG.nexusApi, { cache: 'no-store' });
+    // URL robusta: funciona bajo /boletin/ y en la raíz del dominio
+    const apiUrl = new URL(CFG.nexusApi, location.href).href;
+    const res = await fetch(apiUrl, { cache: 'no-store' });
     if (!res.ok) return false;
     const data = await res.json();
     if (data && data.kanban) {
