@@ -1,0 +1,12 @@
+{
+  "name": "Boletín LA BUENA — Situational Awareness",
+  "short_name": "LA BUENA",
+  "description": "Dashboard personal de conciencia situacional — La Paz, BCS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0f1a",
+  "theme_color": "#0a0f1a",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
