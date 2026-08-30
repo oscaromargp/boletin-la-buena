@@ -1,4 +1,10 @@
 # 🛰️ Boletín LA BUENA — Situational Awareness Edition v3
+
+> **v3.2 — Nota de seguridad (30-ago-2026):** se eliminó un token de GitHub que estaba hardcodeado en el código.
+> El repositorio fue reescrito (historial limpio) y ahora corre en **modo demo público**: sin datos personales
+> (panel de salud/medicamentos e hijo desactivados). La versión personal completa vive en el VPS de Óscar,
+> protegida con contraseña y conectada a Nexus. Si usas el sync de GitHub, pega TU token en ⚙️ → Prefs
+> (se guarda solo en tu navegador).
 <p align="center">
   <img src="assets/banner.png" alt="Boletin La Buena" width="100%"/>
 </p>
